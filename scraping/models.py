@@ -1,7 +1,10 @@
+import jsonfield
 from django.db import models
 
 from scraping.utils import from_cyrillic_to_eng
 
+def default_urls():
+    return {'work': '', 'rabota': '', 'dou': '', 'djinni': ''}
 
 class City(models.Model):
     name = models.CharField(max_length=50,
@@ -48,9 +51,9 @@ class Vacancy(models.Model):
     title = models.CharField(max_length=250, verbose_name='Заголовок вакансии')
     company = models.CharField(max_length=250, verbose_name='Компания')
     description = models.TextField(verbose_name='Описание вакансии')
-    city = models.ForeignKey('City', on_delete=models.CASCADE,
+    city = models.ForeignKey(City, on_delete=models.CASCADE,
                              verbose_name='Город', related_name='vacancies')
-    language = models.ForeignKey('Language', on_delete=models.CASCADE,
+    language = models.ForeignKey(Language, on_delete=models.CASCADE,
                                  verbose_name='Язык программирования')
     timestamp = models.DateField(auto_now_add=True)
 
@@ -63,3 +66,20 @@ class Vacancy(models.Model):
         return self.title
 
 
+class Error(models.Model):
+    timestamp = models.DateField(auto_now_add=True)
+    data = models.JSONField()
+
+    def __str__(self):
+        return str(self.timestamp)
+
+
+class Url(models.Model):
+    city = models.ForeignKey(City, on_delete=models.CASCADE,
+                             verbose_name='Город')
+    language = models.ForeignKey(Language, on_delete=models.CASCADE,
+                                 verbose_name='Язык программирования')
+    url_data = models.JSONField(default=default_urls)
+    
+    class Meta:
+        unique_together = ('city', 'language')
