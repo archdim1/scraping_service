@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'scraping_service.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': os.path.join(BASE_DIR / 'db.sqlite3'),
     }
 }
 
@@ -142,3 +142,6 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = EMAIL_PORT
 EMAIL_HOST_USER = EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD
+
+STATICFILES_DIRS = (os.path.join(BASE_DIR / 'static'),)
+STATIC_ROOT = os.path.join(BASE_DIR / 'staticfiles')
